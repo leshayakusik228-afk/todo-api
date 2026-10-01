@@ -43,10 +43,10 @@ func (r *InMemoryRepo) GetByID(id int) (Task, error) {
 	return task, nil //возврашаем найденную задачу и nil, если всё ок
 }
 
-func (r*InMemoryRepo) List() ([]Task, error) {
-	tasks:=make([]Task,0,len(r.data))//создаём слайс задач, длина 0, ёмкость равна количеству задач в map
-	for_,task:=range r.data{
-		tasks=append(tasks,task)//добавляем каждую задачу в слайс
+func (r *InMemoryRepo) List() ([]Task, error) {
+	tasks := make([]Task, 0, len(r.data)) //создаём слайс задач, длина 0, ёмкость равна количеству задач в map
+	for _, task := range r.data {         // ключ не нужен, поэтому используем _, task
+		tasks = append(tasks, task) //добавляем каждую задачу в слайс
 	}
-	return tasks,nil//возврашаем слайс задач и nil, если всё ок	
-	}
+	return tasks, nil //возврашаем слайс задач и nil, если всё ок
+}
