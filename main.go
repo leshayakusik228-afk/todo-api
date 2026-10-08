@@ -14,7 +14,18 @@ func main() {
 	h := handler.NewTaskHandler(u) //handler получает usecase
 
 	u.CreateTask("составить резюме", "срочно!")
-	http.HandleFunc("/tasks", h.ListTasks)
+
+	http.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			h.ListTasks(w, r)
+		case http.MethodPost:
+			h.CreateTask(w, r)
+		default:
+			http.Error(w, "metod not allwed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	http.ListenAndServe(":8080", nil)
 
 }
