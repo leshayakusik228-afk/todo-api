@@ -1,6 +1,9 @@
 package repository
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 type Task struct {
 	ID          int
@@ -48,5 +51,8 @@ func (r *InMemoryRepo) List() ([]Task, error) {
 	for _, task := range r.data {         // ключ не нужен, поэтому используем _, task
 		tasks = append(tasks, task) //добавляем каждую задачу в слайс
 	}
+	sort.Slice(tasks, func(i, j int) bool { //сортиуем слайс такс слайс меняется на месте присваивать результат не нужно
+		return tasks[i].ID < tasks[j].ID //tasks[i].ID < tasks[j].ID — «элемент i идёт раньше j, если его ID меньше». Это сортировка по возрастанию ID.
+	})
 	return tasks, nil //возврашаем слайс задач и nil, если всё ок
 }

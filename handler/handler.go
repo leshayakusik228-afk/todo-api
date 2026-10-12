@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"todo-api/usecase"
 )
 
@@ -44,4 +45,20 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusCreated)
 
+}
+
+func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
+	idstr := r.PathValue("id")     // достаем значение сегмента айди из адреса
+	id, err := strconv.Atoi(idstr) //перевод строки в число
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest) //task/abc-ошибка
+		return
+	}
+	task, err := h.uc.GetTask(id) //спрашиваем задачу у юскасе
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(task)
 }

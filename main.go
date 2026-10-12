@@ -14,7 +14,7 @@ func main() {
 	h := handler.NewTaskHandler(u) //handler получает usecase
 
 	u.CreateTask("составить резюме", "срочно!")
-
+	http.HandleFunc("GET /tasks/{id}", h.GetTask)
 	http.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
