@@ -16,6 +16,7 @@ type TaskRepository interface {
 	Create(task Task) error       // принимает задачу и возвращает ошибку если что-то не так
 	GetByID(id int) (Task, error) // принимает айди и возвращает найденную задачу и ошибку
 	List() ([]Task, error)        //принимает ничего и возвращает список задач
+	Delete(id int) error
 }
 
 type InMemoryRepo struct {
@@ -26,6 +27,18 @@ func NewInMemoryRepo() *InMemoryRepo {
 	return &InMemoryRepo{
 		data: make(map[int]Task),
 	}
+}
+
+func (r *InMemoryRepo) Delete(id int) error {
+	_, ok := r.data[id]
+	if !ok {
+		return fmt.Errorf("task not found")
+	} else {
+		delete(r.data, id)
+		return nil
+
+	}
+
 }
 func (r *InMemoryRepo) Create(task Task) error {
 	r.data[task.ID] = task
