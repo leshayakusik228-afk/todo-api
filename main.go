@@ -15,6 +15,7 @@ func main() {
 
 	u.CreateTask("составить резюме", "срочно!")
 	http.HandleFunc("GET /tasks/{id}", h.GetTask)
+	http.HandleFunc("DELETE /tasks/{id}", h.DeleteTask)
 	http.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:

@@ -46,6 +46,20 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 }
+func (h *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	idstr := r.PathValue("id")
+	id, err := strconv.Atoi(idstr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+	err = h.uc.DeleteTask(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
 
 func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 	idstr := r.PathValue("id")     // достаем значение сегмента айди из адреса
