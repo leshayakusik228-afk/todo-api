@@ -9,7 +9,7 @@ func TestCreateTask(t *testing.T) {
 	repo := repository.NewInMemoryRepo() //хранилище
 	uc := NewTaskUsecase(repo)           //uc-то что мы проверяем(подключен или нет)
 
-	err := uc.CreateTask("тест", "описание") //действие которое проверяем
+	_, err := uc.CreateTask("тест", "описание") //действие которое проверяем
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

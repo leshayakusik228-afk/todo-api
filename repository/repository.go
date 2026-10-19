@@ -13,20 +13,23 @@ type Task struct {
 }
 
 type TaskRepository interface {
-	Create(task Task) error       // принимает задачу и возвращает ошибку если что-то не так
-	GetByID(id int) (Task, error) // принимает айди и возвращает найденную задачу и ошибку
-	List() ([]Task, error)        //принимает ничего и возвращает список задач
+	Create(task Task) (Task, error) // принимает задачу и возвращает ошибку если что-то не так
+	GetByID(id int) (Task, error)   // принимает айди и возвращает найденную задачу и ошибку
+	List() ([]Task, error)          //принимает ничего и возвращает список задач
 	Delete(id int) error
 }
 
 type InMemoryRepo struct {
-	data map[int]Task
+	data   map[int]Task
+	nextID int
 }
 
 func NewInMemoryRepo() *InMemoryRepo {
 	return &InMemoryRepo{
-		data: make(map[int]Task),
+		data:   make(map[int]Task),
+		nextID: 1,
 	}
+
 }
 
 func (r *InMemoryRepo) Delete(id int) error {
@@ -40,9 +43,11 @@ func (r *InMemoryRepo) Delete(id int) error {
 	}
 
 }
-func (r *InMemoryRepo) Create(task Task) error {
-	r.data[task.ID] = task
-	return nil
+func (r *InMemoryRepo) Create(task Task) (Task, error) {
+	task.ID = r.nextID
+	r.nextID = r.nextID + 1
+	r.data[task.ID] = task //Правильно так: «в map r.data по ключу task.ID кладём значение task». Ключ это ID, значение это сама задача.
+	return task, nil
 }
 
 //(r *InMemoryRepo) — ресивер, указатель, чтобы менять реальную map r.data, а не копию

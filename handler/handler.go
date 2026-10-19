@@ -38,12 +38,15 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.uc.CreateTask(req.Title, req.Description) // передаём в usecase данные, которые Decoder положил в req
+	task, err := h.uc.CreateTask(req.Title, req.Description) // передаём в usecase данные, которые Decoder положил в req
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+
+	json.NewEncoder(w).Encode(task)
 
 }
 func (h *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {

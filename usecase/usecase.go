@@ -5,9 +5,9 @@ import "todo-api/repository"
 // Интерфейс TaskUsecase — то, что увидит handler.
 // В нём 3 метода — по одному на каждую операцию, которую должен уметь usecase-слой
 type TaskUsecase interface {
-	CreateTask(title, description string) error // создание задачи
-	GetTask(id int) (repository.Task, error)    // получение задачи по id
-	ListTask() ([]repository.Task, error)       // получение всех задач
+	CreateTask(title, description string) (repository.Task, error) // создание задачи
+	GetTask(id int) (repository.Task, error)                       // получение задачи по id
+	ListTask() ([]repository.Task, error)                          // получение всех задач
 	DeleteTask(id int) error
 }
 
@@ -32,18 +32,13 @@ func (u *taskUsecase) ListTask() ([]repository.Task, error) {
 func (u *taskUsecase) GetTask(id int) (repository.Task, error) {
 	return u.repo.GetByID(id) //вызываем метод GetByID() у репозитория, который вернёт задачу и ошибку
 }
-func (u *taskUsecase) CreateTask(title, description string) error {
-	//1. получить все задачичтобы понят сколько их
-	tasks, err := u.repo.List() //получаем список всех задач, чтобы определить новый ID
-	if err != nil {
-		return err
-	}
+func (u *taskUsecase) CreateTask(title, description string) (repository.Task, error) {
+	//IDсоздается в репозитории
 	//новая задача
 	task := repository.Task{
-		ID:          len(tasks) + 1, //новый ID будет на 1 больше чем количество задач
 		Title:       title,
 		Description: description,
 		Status:      "new", //по умолчанию статус новой задачи "new"
 	}
-	return u.repo.Create(task) //вызываем метод Create() у репозитория, который создаст задачу и вернёт ошибку если что-то не так
+	return u.repo.Create(task) //Метод Create уже возвращает сразу пару (Task, error), и return просто передаёт её дальше. Тип error дописывать нельзя, это снова тип вместо значения
 }
