@@ -9,6 +9,7 @@ type TaskUsecase interface {
 	GetTask(id int) (repository.Task, error)                       // получение задачи по id
 	ListTask() ([]repository.Task, error)                          // получение всех задач
 	DeleteTask(id int) error
+	DoneTask(id int) (repository.Task, error)
 }
 
 // taskUsecase — конкретная реализация интерфейса TaskUsecase
@@ -23,6 +24,9 @@ func NewTaskUsecase(repo1 repository.TaskRepository) *taskUsecase {
 
 func (u *taskUsecase) DeleteTask(id int) error {
 	return u.repo.Delete(id)
+}
+func (u *taskUsecase) DoneTask(id int) (repository.Task, error) {
+	return u.repo.Done(id)
 }
 
 func (u *taskUsecase) ListTask() ([]repository.Task, error) {

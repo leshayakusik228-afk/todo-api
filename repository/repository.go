@@ -17,6 +17,7 @@ type TaskRepository interface {
 	GetByID(id int) (Task, error)   // принимает айди и возвращает найденную задачу и ошибку
 	List() ([]Task, error)          //принимает ничего и возвращает список задач
 	Delete(id int) error
+	Done(id int) (Task, error)
 }
 
 type InMemoryRepo struct {
@@ -73,4 +74,14 @@ func (r *InMemoryRepo) List() ([]Task, error) {
 		return tasks[i].ID < tasks[j].ID //tasks[i].ID < tasks[j].ID — «элемент i идёт раньше j, если его ID меньше». Это сортировка по возрастанию ID.
 	})
 	return tasks, nil //возврашаем слайс задач и nil, если всё ок
+}
+func (r *InMemoryRepo) Done(id int) (Task, error) {
+	task, ok := r.data[id] //ищем задачу по айди
+	if !ok {
+		return Task{}, fmt.Errorf("task not found")
+	}
+
+	task.Status = "done"   //меняем статус
+	r.data[task.ID] = task //закидываем в мапу измененную задачу тобы изменение сохранилось, т.к. task это копия
+	return task, nil
 }

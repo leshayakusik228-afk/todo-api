@@ -79,3 +79,21 @@ func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(task)
 }
+
+func (h *TaskHandler) DoneTask(w http.ResponseWriter, r *http.Request) {
+	idstr := r.PathValue("id")
+	id, err := strconv.Atoi(idstr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+	task, err := h.uc.DoneTask(id) //спрашиваем задачу в юскасе
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(task)
+
+}
